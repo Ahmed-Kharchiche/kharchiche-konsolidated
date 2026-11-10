@@ -1,0 +1,87 @@
+name: Native distributions
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    name: ${{ matrix.platform }}-${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux
+            arch: x64
+            jdk_arch: x64
+          - runner: macos-15
+            platform: macos
+            arch: arm64
+            jdk_arch: aarch64
+          - runner: macos-15-intel
+            platform: macos
+            arch: x64
+            jdk_arch: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          architecture: ${{ matrix.jdk_arch }}
+          cache: maven
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Linux prerequisites
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot dpkg-dev xvfb xauth libgtk-3-0t64 libasound2t64
+      - name: Build and test Linux
+        if: matrix.platform == 'linux'
+        run: xvfb-run -a bash scripts/build-linux.sh
+      - name: Build and test macOS
+        if: matrix.platform == 'macos'
+        run: bash scripts/build-macos.sh
+      - name: Archive app preserving executable bits and symlinks
+        if: matrix.platform == 'macos'
+        run: |
+          mkdir -p target/native-artifacts
+          ditto -c -k --sequesterRsrc --keepParent \
+            "dist/macos/${{ matrix.arch }}/Kharchiche Konsolidated.app" \
+            "target/native-artifacts/Kharchiche-Konsolidated-${{ matrix.arch }}.app.zip"
+      - name: Linux package artifact
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v7
+        with:
+          name: kharchiche-linux-${{ matrix.arch }}
+          path: dist/linux/*.deb
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      - name: macOS artifacts
+        if: matrix.platform == 'macos'
+        uses: actions/upload-artifact@v7
+        with:
+          name: kharchiche-macos-${{ matrix.arch }}
+          path: |
+            dist/macos/${{ matrix.arch }}/*.dmg
+            target/native-artifacts/*.app.zip
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      - name: Diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: logs-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            target/native-logs/
+            target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 7
