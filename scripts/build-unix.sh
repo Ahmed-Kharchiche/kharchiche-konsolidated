@@ -73,9 +73,7 @@ python3 "$root/scripts/check-native-input.py" "$work/input" "$root" "$sqlite_os"
 "$work/runtime/bin/java" -version 2>&1 | tee "$logs/runtime.log"
 name="Kharchiche Konsolidated"
 image_options=(--verbose --type app-image)
-if [[ "$platform" == linux ]]; then
-  image_options+=(--linux-shortcut)
-else
+if [[ "$platform" == macos ]]; then
   image_options+=(--mac-package-identifier com.kharchiche.konsolidated)
 fi
 "$JAVA_HOME/bin/jpackage" --name "$name" \
