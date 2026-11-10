@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: native-distributions-main
+  cancel-in-progress: false
+
 jobs:
   native:
     name: ${{ matrix.platform }}-${{ matrix.arch }}
@@ -72,6 +76,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path "target/native-artifacts" | Out-Null
+
           Compress-Archive `
             -Path "dist/Kharchiche Konsolidated" `
             -DestinationPath "target/native-artifacts/Kharchiche-Konsolidated-windows-x64.zip" `
@@ -125,6 +130,7 @@ jobs:
         if: matrix.platform == 'macos'
         run: |
           mkdir -p target/native-artifacts
+
           ditto -c -k --sequesterRsrc --keepParent \
             "dist/macos/${{ matrix.arch }}/Kharchiche Konsolidated.app" \
             "target/native-artifacts/Kharchiche-Konsolidated-${{ matrix.arch }}.app.zip"
@@ -173,6 +179,12 @@ jobs:
           persist-credentials: true
           lfs: true
 
+      - name: Clean old distributions
+        run: |
+          git rm -r -f --ignore-unmatch dist
+          rm -rf dist
+          mkdir -p dist
+
       - name: Download Windows distribution
         uses: actions/download-artifact@v4
         with:
@@ -189,13 +201,30 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: kharchiche-macos-arm64
-          path: dist/macos/arm64
+          path: temp/macos/arm64
 
       - name: Download macOS Intel distribution
         uses: actions/download-artifact@v4
         with:
           name: kharchiche-macos-x64
-          path: dist/macos/x64
+          path: temp/macos/x64
+
+      - name: Organize macOS distributions
+        run: |
+          mkdir -p dist/macos/arm64 dist/macos/x64
+
+          find temp/macos/arm64 -type f \
+            \( -name '*.dmg' -o -name '*.app.zip' \) \
+            -exec mv -t dist/macos/arm64 {} +
+
+          find temp/macos/x64 -type f \
+            \( -name '*.dmg' -o -name '*.app.zip' \) \
+            -exec mv -t dist/macos/x64 {} +
+
+          rm -rf temp
+
+          echo "Final distribution structure:"
+          find dist -type f
 
       - name: Configure Git LFS
         run: |
@@ -211,17 +240,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add .gitattributes
-          git add -f dist/windows/*.zip
-          git add -f dist/linux/*.deb
-          git add -f dist/macos/arm64/*.dmg
-          git add -f dist/macos/arm64/*.app.zip
-          git add -f dist/macos/x64/*.dmg
-          git add -f dist/macos/x64/*.app.zip
+          git add -f -A dist
 
           if git diff --cached --quiet; then
             echo "No distribution changes."
             exit 0
           fi
 
-          git commit -m "chore(dist): mise a jour automatique des distributions"
+          git commit -m "chore(dist): actualisation automatique des distributions"
           git push origin HEAD:main
