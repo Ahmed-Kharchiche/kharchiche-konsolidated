@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.PasswordField?>
+
+<VBox alignment="CENTER" prefHeight="746.0" prefWidth="591.0" spacing="20.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
+   <Pane prefHeight="261.0" prefWidth="591.0">
+      <children>
+         <Button fx:id="homeButton" layoutX="251.0" layoutY="-39.0" mnemonicParsing="false" onAction="#Home" prefHeight="79.0" prefWidth="90.0" style="-fx-background-color: transparent;">
+            <graphic>
+               <ImageView fitHeight="74.0" fitWidth="92.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/home2.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
+          <ImageView fitHeight="162.0" fitWidth="271.0" layoutX="190.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(        gaussian,        rgba(0,0,0,0.5),        50,        0.5,        0,        5    );">
+              <image>
+                  <Image url="@../images/connexion.png" />
+              </image>
+          </ImageView>
+      </children>
+   </Pane>
+
+    <Label text="Bonjour ! Entrez vos identifiants :">
+        <font>
+            <Font size="28.0" />
+        </font></Label>
+
+    <TextField fx:id="monMail" maxWidth="500.0" prefHeight="25.0" prefWidth="363.0" promptText="Email">
+        <font>
+            <Font name="Arial Black" size="18.0" />
+        </font></TextField>
+    <PasswordField fx:id="monMdp" maxWidth="500.0"
+                   onAction="#validerConnexion"
+                   promptText="Mot de passe"
+                   translateY="20.0">
+        <font>
+            <Font name="Arial Black" size="18.0" />
+        </font>
+    </PasswordField>
+    <Button fx:id="validerBouton2" onAction="#validerConnexion" prefHeight="65.0" prefWidth="165.0" text="Valider" textFill="WHITE" translateY="20.0">
+      <font>
+         <Font size="30.0" />
+      </font>
+      <VBox.margin>
+         <Insets bottom="50.0" />
+      </VBox.margin></Button>
+   <Hyperlink fx:id="creerCompteLien" onAction="#Inscrire" prefHeight="32.0" prefWidth="106.0" style="-fx-border-color: white; -fx-border-width: 5px;" text="Créer un compte" />
+
+</VBox>

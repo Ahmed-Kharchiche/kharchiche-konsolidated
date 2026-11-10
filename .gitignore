@@ -1,0 +1,78 @@
+### IntelliJ IDEA ###
+.idea/
+*.iml
+out/
+.kotlin/
+
+### Eclipse ###
+.apt_generated/
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Java ###
+*.class
+target/
+build/
+*.log
+
+### SQLite ###
+hotel.db
+*.db-wal
+*.db-shm
+*.sqbpro
+
+### PDF générés ###
+ticket*.pdf
+
+### Système ###
+.DS_Store
+Thumbs.db
+# Maven / distributions / caches locaux
+.cache/
+dist/
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+*.sqlite3-wal
+*.sqlite3-shm
+*.sqlite3-journal
+*.db-journal
+*.bak
+*.tmp
+*.temp
+!mvnw
+!mvnw.cmd
+!.mvn/wrapper/maven-wrapper.properties
+
+# Distribution locale et raccourci (jamais versionnes)
+/Kharchiche Konsolidated/
+/Kharchiche Konsolidated.lnk
+*.lnk
+
+*.exe
+
+# Native Linux/macOS packages and Python caches
+*.deb
+*.dmg
+*.app/
+*.app.zip
+__pycache__/
+*.py[cod]

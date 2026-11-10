@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="TOUT" prefHeight="939.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
+   <children>
+      <ImageView fitHeight="481.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/villafont.jpg" />
+         </image>
+         <effect>
+            <ColorAdjust brightness="-0.33" contrast="0.12" hue="0.03" saturation="-0.34" />
+         </effect>
+      </ImageView>
+      <AnchorPane fx:id="HOME" layoutX="-3.0" prefHeight="892.0" prefWidth="696.0">
+         <children>
+            <Button fx:id="ReserverButton" alignment="CENTER" layoutX="62.0" layoutY="255.0" mnemonicParsing="false" onAction="#Reserver" prefHeight="159.0" prefWidth="248.0" style="-fx-background-color: rgba(255, 255, 255, 0.5); -fx-background-radius: 25; -fx-border-color: black; -fx-border-radius: 15px; -fx-border-width: 5px; -fx-font-size: 30; -fx-text-fill: black;" text="Réserver" textFill="WHITE">
+               <font>
+                  <Font name="Bodoni MT Bold" size="50.0" />
+               </font>
+            </Button>
+            <Button fx:id="MesReservationsButton" alignment="CENTER" layoutX="377.0" layoutY="255.0" mnemonicParsing="false" onAction="#Reservations" prefHeight="159.0" prefWidth="248.0" style="-fx-background-color: rgba(255, 255, 255, 0.5); -fx-background-radius: 25; -fx-border-color: black; -fx-border-radius: 15px; -fx-border-width: 5px; -fx-font-size: 24; -fx-text-fill: black;" text="Mes réservations" textFill="WHITE">
+               <font>
+                  <Font name="Bodoni MT Bold" size="50.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="menuNoir" layoutY="-198.0" prefHeight="291.0" prefWidth="695.0" style="-fx-background-color: black;">
+         <children>
+            <Button fx:id="inscription" layoutX="514.0" layoutY="226.0" mnemonicParsing="false" onAction="#Inscrire" prefHeight="35.0" prefWidth="153.0" style="-fx-background-color: rgba(255,255,255,0.5);" text="Inscription" />
+            <Button fx:id="connexion" layoutX="341.0" layoutY="226.0" mnemonicParsing="false" onAction="#Connecter" prefHeight="35.0" prefWidth="153.0" style="-fx-background-color: rgba(255,255,255,0.5);" text="Connexion" />
+            <ImageView fitHeight="78.0" fitWidth="78.0" layoutX="14.0" layoutY="205.0" pickOnBounds="true" preserveRatio="true" style="visibility: visible;">
+               <image>
+                  <Image url="@../images/profile.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="230.0"
+                       layoutX="105.0" layoutY="215.0"
+                       preserveRatio="true">
+               <image>
+                  <Image url="@../images/logo.jpg" />
+               </image>
+            </ImageView>
+            <MenuButton fx:id="profile" layoutX="14.0" layoutY="205.0" mnemonicParsing="false" prefHeight="78.0" prefWidth="78.0" style="-fx-background-color: transparent;">
+              <items>
+                <MenuItem fx:id="donnees" mnemonicParsing="false" onAction="#mesDonnees" text="Mes données" />
+                <MenuItem mnemonicParsing="false" onAction="#deconnexion" text="Déconnexion" />
+                  <MenuItem fx:id="infosModif" mnemonicParsing="false" onAction="#modifierInfos" text="Modifier les informations" />
+              </items>
+            </MenuButton>
+            <Label fx:id="donneesCompte" layoutX="37.0" layoutY="24.0" prefHeight="159.0" prefWidth="607.0" style="-fx-text-fill: white;" text="Label">
+               <font>
+                  <Font name="Book Antiqua Italic" size="18.0" />
+               </font>
+            </Label>
+            <Button layoutX="449.0" layoutY="63.0" mnemonicParsing="false" onAction="#mesDonnees" prefHeight="107.0" prefWidth="213.0" style="-fx-text-fill: white; -fx-background-color: transparent; -fx-border-width: 5px; -fx-border-color: white;" text="FERMER">
+               <font>
+                  <Font name="Bodoni MT" size="25.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Pane fx:id="slide" layoutX="-690.0" layoutY="479.0" prefHeight="459.0" prefWidth="2083.0" style="-fx-background-color: #F9FAFB;">
+         <children>
+            <Label fx:id="texteModif1" layoutX="96.0" layoutY="66.0" prefHeight="305.0" prefWidth="509.0" text="Test">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Label>
+            <Button layoutX="546.0" layoutY="25.0" mnemonicParsing="false" onAction="#modifierInfos" prefHeight="53.0" prefWidth="117.0" style="-fx-text-fill: white; -fx-background-color: transparent; -fx-border-width: 5px; -fx-border-color: white;" text="FERMER">
+               <font>
+                  <Font name="Bodoni MT" size="14.0" />
+               </font>
+            </Button>
+            <Button layoutX="530.0" layoutY="358.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="133.0" style="-fx-text-fill: white; -fx-background-color: transparent; -fx-border-width: 5px; -fx-border-color: white;" text="Valider">
+               <font>
+                  <Font name="Bodoni MT" size="14.0" />
+               </font>
+            </Button>
+            <Pane layoutX="-19.0" prefHeight="466.0" prefWidth="706.0" style="-fx-background-color: #555555;">
+               <children>
+                  <Label fx:id="texteModif" layoutX="96.0" layoutY="66.0" prefHeight="315.0" prefWidth="509.0" text="Test">
+                     <font>
+                        <Font size="23.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="546.0" layoutY="25.0" mnemonicParsing="false" onAction="#modifierInfos" prefHeight="53.0" prefWidth="117.0" style="-fx-text-fill: white; -fx-background-color: transparent; -fx-border-width: 5px; -fx-border-color: white;" text="FERMER">
+                     <font>
+                        <Font name="Bodoni MT" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="530.0" layoutY="358.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="133.0" style="-fx-text-fill: white; -fx-background-color: transparent; -fx-border-width: 5px; -fx-border-color: white;" text="Valider">
+                     <font>
+                        <Font name="Bodoni MT" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
+            <Pane layoutX="687.0" layoutY="-2.0" prefHeight="460.0" prefWidth="1398.0">
+               <children>
+                  <ImageView fitHeight="270.0" fitWidth="435.0" layoutX="90.0" layoutY="159.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@../images/hotel.jpg" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="90.0" layoutY="159.0" mnemonicParsing="false" onAction="#imagesVilla" prefHeight="269.0" prefWidth="102.0" style="-fx-font-size: 50px; -fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white;" text="&gt;">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="29.0" layoutY="2.0" text="Découvrez notre large ">
+                     <font>
+                        <Font size="54.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="36.0" layoutY="56.0" prefHeight="62.0" prefWidth="526.0" text="selection de logements">
+                     <font>
+                        <Font size="42.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="14.0" layoutY="401.0" minHeight="12.0" minWidth="53.0" mnemonicParsing="false" onAction="#autoConnect" prefHeight="45.0" prefWidth="67.0" style="-fx-background-color: transparent;" />
+                  <ImageView fitHeight="270.0" fitWidth="371.0" layoutX="525.0" layoutY="159.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/chambre2.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="270.0" fitWidth="427.0" layoutX="872.0" layoutY="159.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/villa.jpg" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="1173.0" layoutY="159.0" mnemonicParsing="false" onAction="#imagesVilla" prefHeight="269.0" prefWidth="102.0" style="-fx-font-size: 50px; -fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white;" text="&lt;">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</Pane>
