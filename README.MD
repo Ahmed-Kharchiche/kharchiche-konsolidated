@@ -206,46 +206,51 @@ Les fichiers de compilation, caches, bases et raccourcis locaux sont ignorés pa
 
 ## Installation et exécution
 
-### Prérequis de développement
+### Prérequis pour lancer le projet
 
-- Un **JDK 21 complet**, avec JAVA_HOME configuré et son dossier bin dans PATH.
-- Une connexion Internet au premier lancement pour le Wrapper et les dépendances.
-- Git pour cloner le dépôt.
-- Une session graphique pour utiliser JavaFX et exécuter les tests d’interface.
+- **Windows** : un JDK Temurin installé dans `C:\Program Files\Eclipse Adoptium` (Java 21 recommandé). Le lanceur `lanceurMaven.bat` recherche automatiquement Java 21, puis Java 25 si nécessaire.
+- Une connexion Internet lors du premier lancement pour récupérer Maven et les dépendances du projet.
+- Une session graphique pour afficher l'interface JavaFX.
 
-Maven et JavaFX sont téléchargés par le projet : aucune installation manuelle de Maven ou du SDK JavaFX n’est nécessaire. Les prérequis du destinataire d’une distribution native sont différents : le Java embarqué remplace l’installation d’un JDK.
+**Maven, JavaFX et IntelliJ IDEA n'ont pas besoin d'être installés séparément** pour lancer l'application avec le fichier `.bat`. Le projet utilise Maven Wrapper, qui télécharge Maven si nécessaire. Le JDK reste requis pour cette méthode ; à l'inverse, les distributions natives embarquent Java.
 
-### Cloner le dépôt
+### Récupérer le projet
+
+Pour cloner le dépôt avec Git :
 
 ~~~bash
 git clone https://github.com/Ahmed-Kharchiche/kharchiche-konsolidated.git
 cd kharchiche-konsolidated
 ~~~
 
-### Démarrer sous Windows
+Il est également possible de télécharger l'archive ZIP du dépôt sur GitHub, puis de l'extraire entièrement avant le lancement.
 
-Depuis PowerShell, à la racine :
+### Démarrer sous Windows — méthode recommandée
+
+1. Installer **Temurin JDK 21** si ce n'est pas déjà fait, dans son emplacement habituel (`C:\Program Files\Eclipse Adoptium`).
+2. Ouvrir le dossier du projet.
+3. **Double-cliquer sur `lanceurMaven.bat`**, à la racine du dépôt.
+4. Patienter pendant la récupération initiale des dépendances, la compilation et le démarrage de l'application JavaFX.
+
+Le lanceur recherche automatiquement le JDK Temurin (Java 21 en priorité, Java 25 en solution de repli) et s'appuie sur **Maven Wrapper** pour exécuter le projet. **Il n'est pas nécessaire de saisir une commande dans le terminal.** Java 21 reste la version de référence du projet ; la compatibilité complète de Java 25 n'est pas garantie.
+
+> **Important :** `lanceurMaven.bat` est un lanceur de développement : il nécessite le JDK et les fichiers du projet. Pour distribuer l'application à quelqu'un qui ne possède pas Java, utiliser la distribution Windows complète décrite plus bas, avec son exécutable et son runtime embarqué.
+
+#### Autres méthodes de lancement sous Windows
+
+Depuis PowerShell, à la racine du projet, avec un JDK 21 configuré :
 
 ~~~powershell
-$env:JAVA_HOME = "C:\chemin\vers\jdk-21"
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
 .\mvnw.cmd javafx:run
 ~~~
 
-Deux lanceurs existent également :
-
-- **lanceurMaven.bat** recherche un JDK Temurin dans C:\Program Files\Eclipse Adoptium, en privilégiant Java 21 puis Java 25. Cette détection correspond à Windows et à ce mode d’installation ; le niveau de référence reste Java 21.
-- **scripts/lancer.bat** utilise le Java configuré, vérifie Java 21, se place à la racine et appelle le Wrapper.
-
-Le packaging Windows exige spécifiquement un **JDK 21 x64**. La présence d’un repli Java 25 dans le lanceur ne constitue pas une validation complète de Java 25 pour toutes les opérations.
-
-La commande suivante permet de nettoyer, recompiler et démarrer :
+Le script `scripts/lancer.bat` peut aussi être utilisé avec un Java 21 déjà configuré. Pour forcer un nettoyage, une recompilation et le lancement :
 
 ~~~powershell
 .\mvnw.cmd clean javafx:run
 ~~~
 
-**Attention : clean supprime tout target/.** Certaines bases et certains PDF d’essais locaux ont été conservés dans **target/packaging-diagnostics/**. Les sauvegarder avant toute commande contenant clean. Pour le lancement courant, **javafx:run sans clean suffit**.
+**Attention : `clean` supprime tout `target/`.** Certaines bases et certains PDF d'essais locaux ont été conservés dans `target/packaging-diagnostics/` : les sauvegarder avant toute commande contenant `clean`. Pour le lancement habituel, `javafx:run` sans `clean` suffit.
 
 ### Démarrer sous Linux ou macOS
 
