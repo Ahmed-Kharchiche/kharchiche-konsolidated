@@ -16,115 +16,113 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="939" prefWidth="693" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
    <children>
-      <TabPane fx:id="panneauReservation" prefHeight="800.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="panneauReservation" prefHeight="939" prefWidth="693" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="pageSelection" text="Selection">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F5F1EA;">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F5F1EA;">
                      <children>
-                        <RadioButton fx:id="chambreClassique" layoutX="73.0" layoutY="90.0" mnemonicParsing="false" onAction="#afficherPrixClassique" text="Chambre classique">
+                        <RadioButton fx:id="chambreClassique" layoutX="119.5" layoutY="159.5" mnemonicParsing="false" onAction="#afficherPrixClassique" text="Chambre classique">
                            <toggleGroup>
                               <ToggleGroup fx:id="typeChambre" />
                            </toggleGroup></RadioButton>
-                        <RadioButton fx:id="chambreDouble" layoutX="73.0" layoutY="115.0" mnemonicParsing="false" onAction="#afficherPrixDouble" text="Chambre double" toggleGroup="$typeChambre" />
-                        <RadioButton fx:id="suiteVIP" layoutX="73.0" layoutY="140.0" mnemonicParsing="false" onAction="#afficherPrixVIP" text="Suite VIP" toggleGroup="$typeChambre" />
-                        <Label fx:id="prixChambre" layoutX="214.0" layoutY="102.0" prefHeight="43.0" prefWidth="77.0" style="-fx-border-color: #EFE7DD; -fx-border-width: 5px;">
+                        <RadioButton fx:id="chambreDouble" layoutX="119.5" layoutY="184.5" mnemonicParsing="false" onAction="#afficherPrixDouble" text="Chambre double" toggleGroup="$typeChambre" />
+                        <RadioButton fx:id="suiteVIP" layoutX="119.5" layoutY="209.5" mnemonicParsing="false" onAction="#afficherPrixVIP" text="Suite VIP" toggleGroup="$typeChambre" />
+                        <Label fx:id="prixChambre" layoutX="260.5" layoutY="171.5" prefHeight="43.0" prefWidth="77.0" style="-fx-border-color: #EFE7DD; -fx-border-width: 5px;">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <Label layoutX="50.0" layoutY="37.0" text="La chambre">
+                        <Label layoutX="96.5" layoutY="106.5" text="La chambre">
                            <font>
                               <Font size="28.0" />
                            </font>
                         </Label>
-                        <Label layoutX="50.0" layoutY="188.0" text="Les options">
+                        <Label layoutX="96.5" layoutY="257.5" text="Les options">
                            <font>
                               <Font size="28.0" />
                            </font>
                         </Label>
-                        <CheckBox fx:id="petitDej" layoutX="71.0" layoutY="252.0" mnemonicParsing="false" text="Petit déjeuner (+5 €)" />
-                        <CheckBox fx:id="wifi" layoutX="71.0" layoutY="280.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="99.0" text="Wifi  (+2 €)" />
-                        <CheckBox fx:id="parking" layoutX="70.0" layoutY="309.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="111.0" text="Parking  (+3 €)" />
-                        <Label layoutX="50.0" layoutY="352.0" text="La durée du séjour">
+                        <CheckBox fx:id="petitDej" layoutX="117.5" layoutY="321.5" mnemonicParsing="false" text="Petit déjeuner (+5 €)" />
+                        <CheckBox fx:id="wifi" layoutX="117.5" layoutY="349.5" mnemonicParsing="false" prefHeight="17.0" prefWidth="99.0" text="Wifi  (+2 €)" />
+                        <CheckBox fx:id="parking" layoutX="116.5" layoutY="378.5" mnemonicParsing="false" prefHeight="17.0" prefWidth="111.0" text="Parking  (+3 €)" />
+                        <Label layoutX="96.5" layoutY="421.5" text="La durée du séjour">
                            <font>
                               <Font size="28.0" />
                            </font>
                         </Label>
-                        <Button fx:id="validerSelectionButton" layoutX="387.0" layoutY="686.0" mnemonicParsing="false" onAction="#validerSelection" prefHeight="47.0" prefWidth="177.0" style="-fx-background-color: #555555;" text="Valider la selection ➡" textFill="WHITE">
+                        <Button fx:id="validerSelectionButton" layoutX="433.5" layoutY="755.5" mnemonicParsing="false" onAction="#validerSelection" prefHeight="47.0" prefWidth="177.0" style="-fx-background-color: #555555;" text="Valider la selection ➡" textFill="WHITE">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Button>
-                        <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="463.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="509.5" layoutY="100.5" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/home2.png" />
                            </image>
                         </ImageView>
-                        <Button layoutX="456.0" layoutY="31.0" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
-                        <Label layoutX="479.0" layoutY="98.0" text="Accueil" />
-                        <DatePicker fx:id="dateArrivee" layoutX="54.0" layoutY="436.0" />
-                        <DatePicker fx:id="dateDepart" layoutX="304.0" layoutY="435.0" />
-                        <Label layoutX="59.0" layoutY="411.0" text="Arrivée à l'hotel" />
-                        <Label layoutX="309.0" layoutY="411.0" text="Départ de l'hotel" />
-                        <Label layoutX="266.0" layoutY="108.0" prefHeight="31.0" prefWidth="28.0" text="€">
+                        <Button layoutX="502.5" layoutY="100.5" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
+                        <Label layoutX="525.5" layoutY="167.5" text="Accueil" />
+                        <DatePicker fx:id="dateArrivee" layoutX="100.5" layoutY="505.5" />
+                        <DatePicker fx:id="dateDepart" layoutX="350.5" layoutY="504.5" />
+                        <Label layoutX="105.5" layoutY="480.5" text="Arrivée à l'hotel" />
+                        <Label layoutX="355.5" layoutY="480.5" text="Départ de l'hotel" />
+                        <Label layoutX="345.5" layoutY="177.5" prefHeight="31.0" prefWidth="28.0" text="€">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Label>
-                        <ImageView fx:id="imageChambre" fitHeight="170.0" fitWidth="198.0" layoutX="328.0" layoutY="175.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/chambresimplee.jpg" />
-                           </image></ImageView>
+                        <ImageView fx:id="imageChambre" fitHeight="188.0" fitWidth="274.0" layoutX="375.0" layoutY="245.0" pickOnBounds="true" preserveRatio="true">
+                        </ImageView>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
           <Tab fx:id="pageInformations" disable="true" text="Informations">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F5F1EA;">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F5F1EA;">
                      <children>
-                        <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="462.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="508.5" layoutY="103.5" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/home2.png" />
                            </image>
                         </ImageView>
-                        <Button layoutX="455.0" layoutY="34.0" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
-                        <Label layoutX="478.0" layoutY="100.0" text="Accueil" />
-                        <Button layoutX="45.0" layoutY="684.0" mnemonicParsing="false" onAction="#retourPageSelection" prefHeight="48.0" prefWidth="184.0" style="-fx-background-color: #555555; -fx-text-fill: white;" text="⬅ Changer la selection">
+                        <Button layoutX="501.5" layoutY="103.5" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
+                        <Label layoutX="524.5" layoutY="169.5" text="Accueil" />
+                        <Button layoutX="91.5" layoutY="824.0" mnemonicParsing="false" onAction="#retourPageSelection" prefHeight="48.0" prefWidth="184.0" style="-fx-background-color: #555555; -fx-text-fill: white;" text="⬅ Changer la selection">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Button>
-                        <Button layoutX="347.0" layoutY="684.0" mnemonicParsing="false" onAction="#validerInformations" prefHeight="48.0" prefWidth="209.0" style="-fx-background-color: #555555; -fx-text-fill: white;" text="Valider les informations ➡">
+                        <Button layoutX="393.5" layoutY="824.0" mnemonicParsing="false" onAction="#validerInformations" prefHeight="48.0" prefWidth="209.0" style="-fx-background-color: #555555; -fx-text-fill: white;" text="Valider les informations ➡">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Button>
-                        <ListView fx:id="listeReservations" layoutX="59.0" layoutY="135.0" prefHeight="373.0" prefWidth="481.0" />
-                        <Button fx:id="addLineButton" layoutX="454.0" layoutY="522.0" mnemonicParsing="false" onAction="#addLine" prefHeight="85.0" prefWidth="85.0" style="-fx-background-color: blue;" text="+">
+                        <ListView fx:id="listeReservations" layoutX="60.0" layoutY="280.0" prefHeight="373" prefWidth="573" />
+                        <Button fx:id="addLineButton" layoutX="500.5" layoutY="680.0" mnemonicParsing="false" onAction="#addLine" prefHeight="85.0" prefWidth="85.0" style="-fx-background-color: blue;" text="+">
                            <font>
                               <Font name="System Bold" size="40.0" />
                            </font>
                         </Button>
-                        <Button fx:id="deleteLineButton" layoutX="336.0" layoutY="522.0" mnemonicParsing="false" onAction="#deleteLine" prefHeight="85.0" prefWidth="85.0" style="-fx-background-color: red;" text="-">
+                        <Button fx:id="deleteLineButton" layoutX="382.5" layoutY="680.0" mnemonicParsing="false" onAction="#deleteLine" prefHeight="85.0" prefWidth="85.0" style="-fx-background-color: red;" text="-">
                            <font>
                               <Font name="System Bold" size="40.0" />
                            </font>
                         </Button>
-                        <TextField fx:id="lineNumber" layoutX="252.0" layoutY="536.0" prefHeight="58.0" prefWidth="73.0" promptText="line" visible="false">
+                        <TextField fx:id="lineNumber" layoutX="298.5" layoutY="693.0" prefHeight="58.0" prefWidth="73.0" promptText="line" visible="false">
                            <font>
                               <Font size="27.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="retirerToutButton" layoutX="71.0" layoutY="522.0" mnemonicParsing="false" onAction="#retirerTout" prefHeight="85.0" prefWidth="93.0" style="-fx-background-color: grey;" text="🔄">
+                        <Button fx:id="retirerToutButton" layoutX="117.5" layoutY="680.0" mnemonicParsing="false" onAction="#retirerTout" prefHeight="85.0" prefWidth="93.0" style="-fx-background-color: grey;" text="🔄">
                            <font>
                               <Font name="System Bold" size="40.0" />
                            </font>
                         </Button>
-                        <Label fx:id="prixTotalReservations" layoutX="435.0" layoutY="148.0" prefHeight="43.0" prefWidth="90.0" style="-fx-border-color: black; -fx-text-alignment: center;" textAlignment="CENTER">
+                        <Label fx:id="prixTotalReservations" layoutX="543.0" layoutY="216.0" prefHeight="43.0" prefWidth="90.0" style="-fx-border-color: black; -fx-text-alignment: center;" textAlignment="CENTER">
                            <font>
                               <Font size="21.0" />
                            </font>
@@ -134,52 +132,52 @@
           </Tab>
             <Tab fx:id="pagePaiement" disable="true" text="Paiement">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #F5F1EA;">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F5F1EA;">
                      <children>
-                        <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="463.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="509.5" layoutY="106.5" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/home2.png" />
                            </image>
                         </ImageView>
-                        <Button layoutX="456.0" layoutY="37.0" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
-                        <Label layoutX="479.0" layoutY="103.0" text="Accueil" />
-                        <TextField fx:id="numCB" layoutX="43.0" layoutY="476.0" prefHeight="25.0" prefWidth="260.0" promptText="Numero de carte" />
-                        <TextField fx:id="nomCB" layoutX="43.0" layoutY="514.0" prefHeight="25.0" prefWidth="260.0" promptText="Nom du titualire" />
-                        <TextField fx:id="dateCB" layoutX="43.0" layoutY="557.0" prefHeight="25.0" prefWidth="149.0" promptText="Date d'expiration" />
-                        <TextField fx:id="CVV" layoutX="229.0" layoutY="553.0" prefHeight="33.0" prefWidth="73.0" promptText="CVV" />
-                        <Label layoutX="39.0" layoutY="45.0" prefHeight="53.0" prefWidth="368.0" text="Procéder au paiement">
+                        <Button layoutX="502.5" layoutY="106.5" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
+                        <Label layoutX="525.5" layoutY="172.5" text="Accueil" />
+                        <TextField fx:id="numCB" layoutX="89.5" layoutY="545.5" prefHeight="25.0" prefWidth="260.0" promptText="1234 5678 9012 3456" />
+                        <TextField fx:id="nomCB" layoutX="89.5" layoutY="583.5" prefHeight="25.0" prefWidth="260.0" promptText="NOM DU TITULAIRE" />
+                        <TextField fx:id="dateCB" layoutX="89.5" layoutY="626.5" prefHeight="25.0" prefWidth="149.0" promptText="MM/AA" />
+                        <TextField fx:id="CVV" layoutX="275.5" layoutY="622.5" prefHeight="33.0" prefWidth="73.0" promptText="CVV" />
+                        <Label layoutX="85.5" layoutY="114.5" prefHeight="53.0" prefWidth="368.0" text="Procéder au paiement">
                            <font>
                               <Font size="36.0" />
                            </font>
                         </Label>
-                        <Label fx:id="prixTotalPaiement" layoutX="468.0" layoutY="467.0" prefHeight="43.0" prefWidth="90.0" style="-fx-border-color: black; -fx-text-alignment: center;" textAlignment="CENTER">
+                        <Label fx:id="prixTotalPaiement" layoutX="514.5" layoutY="536.5" prefHeight="43.0" prefWidth="90.0" style="-fx-border-color: black; -fx-text-alignment: center;" textAlignment="CENTER">
                            <font>
                               <Font size="21.0" />
                            </font>
                         </Label>
-                        <Label layoutX="340.0" layoutY="476.0" text="Montant total :">
+                        <Label layoutX="386.5" layoutY="545.5" text="Montant total :">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Label>
-                        <Label layoutX="43.0" layoutY="429.0" prefHeight="38.0" prefWidth="175.0" text="Carte Bancaire">
+                        <Label layoutX="89.5" layoutY="498.5" prefHeight="38.0" prefWidth="175.0" text="Carte Bancaire">
                            <font>
                               <Font size="26.0" />
                            </font>
                         </Label>
-                        <Button layoutX="190.0" layoutY="630.0" mnemonicParsing="false" onAction="#validerPaiement" prefHeight="40.0" prefWidth="223.0" style="-fx-background-color: green; -fx-text-fill: white;" text="Valider le paiement">
+                        <Button layoutX="236.5" layoutY="699.5" mnemonicParsing="false" onAction="#validerPaiement" prefHeight="40.0" prefWidth="223.0" style="-fx-background-color: green; -fx-text-fill: white;" text="Valider le paiement">
                            <font>
                               <Font size="21.0" />
                            </font>
                         </Button>
-                        <Label fx:id="infosPerso" layoutX="43.0" layoutY="213.0" prefHeight="151.0" prefWidth="398.0" />
-                        <Label layoutX="43.0" layoutY="165.0" prefHeight="38.0" prefWidth="485.0" text="Confirmez vos informations personnelles">
+                        <Label fx:id="infosPerso" layoutX="89.5" layoutY="282.5" prefHeight="151.0" prefWidth="398.0" />
+                        <Label layoutX="89.5" layoutY="234.5" prefHeight="38.0" prefWidth="485.0" text="Confirmez vos informations personnelles">
                            <font>
                               <Font size="26.0" />
                            </font>
                         </Label>
-                        <Button layoutX="472.0" layoutY="226.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="98.0" text="Modifier" />
-                        <CheckBox fx:id="confirmInfos" layoutX="300.0" layoutY="377.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="263.0" text="Je confirmer mes informations personnelles" />
+                        <Button layoutX="518.5" layoutY="295.5" mnemonicParsing="false" prefHeight="44.0" prefWidth="98.0" text="Modifier" />
+                        <CheckBox fx:id="confirmInfos" layoutX="89.5" layoutY="446.5" mnemonicParsing="false" prefHeight="36.0" prefWidth="527.0" text="Je confirmer mes informations personnelles" />
                      </children></AnchorPane>
                </content>
             </Tab>

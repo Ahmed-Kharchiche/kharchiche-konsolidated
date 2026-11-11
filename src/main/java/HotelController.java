@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.TextFormatter;
+import java.util.Locale;
 
 
 public class HotelController {
@@ -98,6 +100,8 @@ public class HotelController {
     @FXML
     private Tab pagePaiement;
 
+    @FXML
+    private TextField numCB, nomCB, dateCB, CVV;
 
 
     private Stage stage;
@@ -163,21 +167,23 @@ public class HotelController {
     @FXML
     public void initialize() {
 
-        if (profile==null) return;
-
-
-
-        if (Session.currentUser != null) {
-            connexion.setVisible(false);
-            inscription.setVisible(false);
-            profile.setVisible(true);
+        if (profile != null) {
+            if (Session.currentUser != null) {
+                connexion.setVisible(false);
+                inscription.setVisible(false);
+                profile.setVisible(true);
+            } else {
+                connexion.setVisible(true);
+                inscription.setVisible(true);
+                profile.setVisible(false);
+            }
         }
-        else{
-            connexion.setVisible(true);
-            inscription.setVisible(true);
-            profile.setVisible(false);
+
+        if (numCB != null && nomCB != null && dateCB != null && CVV != null) {
+            configurerChampsBancaires();
         }
     }
+
     @FXML
     private void validerConnexion(ActionEvent event) {
         email = monMail.getText();
@@ -512,6 +518,69 @@ public class HotelController {
         Session.panier.listeReservations.clear();
         Home(event);
 
+    }
+
+    private void configurerChampsBancaires() {
+
+        // Numéro de carte : 19 chiffres maximum, espaces automatiques
+        numCB.setTextFormatter(new TextFormatter<String>(change -> {
+            if (!change.isContentChange()) return change;
+
+            String chiffres = change.getControlNewText().replaceAll("\\D", "");
+
+            if (chiffres.length() > 16) return null;
+
+            String format = chiffres.replaceAll("(.{4})(?=.)", "$1 ");
+
+            change.setRange(0, change.getControlText().length());
+            change.setText(format);
+            change.setCaretPosition(format.length());
+            change.setAnchor(format.length());
+
+            return change;
+        }));
+
+        // Titulaire : lettres, accents, espaces et majuscules
+        nomCB.setTextFormatter(new TextFormatter<String>(change -> {
+            String texte = change.getControlNewText();
+
+            if (!texte.matches("[\\p{L} '\\-]*")) return null;
+
+            change.setText(change.getText().toUpperCase(Locale.ROOT));
+
+            return change;
+        }));
+
+        // Expiration : format MM/AA
+        dateCB.setTextFormatter(new TextFormatter<String>(change -> {
+            if (!change.isContentChange()) return change;
+
+            String chiffres = change.getControlNewText().replaceAll("\\D", "");
+
+            if (chiffres.length() > 4) return null;
+
+            if (chiffres.length() >= 2) {
+                int mois = Integer.parseInt(chiffres.substring(0, 2));
+
+                if (mois < 1 || mois > 12) return null;
+            }
+
+            String format = chiffres.length() > 2
+                    ? chiffres.substring(0, 2) + "/" + chiffres.substring(2)
+                    : chiffres;
+
+            change.setRange(0, change.getControlText().length());
+            change.setText(format);
+            change.setCaretPosition(format.length());
+            change.setAnchor(format.length());
+
+            return change;
+        }));
+
+        // CVV : 3 ou 4 chiffres maximum
+        CVV.setTextFormatter(new TextFormatter<String>(change ->
+                change.getControlNewText().matches("\\d{0,3}") ? change : null
+        ));
     }
 
     @FXML

@@ -11,11 +11,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="TOUT" prefHeight="939.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
+<Pane fx:id="TOUT" prefHeight="939.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
    <children>
-      <ImageView fitHeight="481.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="393.0" fitWidth="696.0" layoutY="93.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/villafont.jpg" />
+            <Image url="@../images/vue_accueil.jpg" />
          </image>
          <effect>
             <ColorAdjust brightness="-0.33" contrast="0.12" hue="0.03" saturation="-0.34" />
@@ -44,9 +44,7 @@
                   <Image url="@../images/profile.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="150.0" fitWidth="230.0"
-                       layoutX="105.0" layoutY="215.0"
-                       preserveRatio="true">
+            <ImageView fitHeight="150.0" fitWidth="230.0" layoutX="105.0" layoutY="215.0" preserveRatio="true">
                <image>
                   <Image url="@../images/logo.jpg" />
                </image>
@@ -108,9 +106,9 @@
             </Pane>
             <Pane layoutX="687.0" layoutY="-2.0" prefHeight="460.0" prefWidth="1398.0">
                <children>
-                  <ImageView fitHeight="270.0" fitWidth="435.0" layoutX="90.0" layoutY="159.0" pickOnBounds="true">
+                  <ImageView fitHeight="270.0" fitWidth="1185.0" layoutX="90.0" layoutY="159.0" pickOnBounds="true">
                      <image>
-                        <Image url="@../images/hotel.jpg" />
+                        <Image url="@../images/carousel.jpg" />
                      </image>
                   </ImageView>
                   <Button layoutX="90.0" layoutY="159.0" mnemonicParsing="false" onAction="#imagesVilla" prefHeight="269.0" prefWidth="102.0" style="-fx-font-size: 50px; -fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white;" text="&gt;">
@@ -118,27 +116,18 @@
                         <Font size="30.0" />
                      </font>
                   </Button>
-                  <Label layoutX="29.0" layoutY="2.0" text="Découvrez notre large ">
+                  <Label layoutX="29.0" layoutY="2.0" text="Découvrez notre univers ">
                      <font>
                         <Font size="54.0" />
                      </font>
                   </Label>
-                  <Label layoutX="36.0" layoutY="56.0" prefHeight="62.0" prefWidth="526.0" text="selection de logements">
+                  <Label layoutX="29.0" layoutY="63.0" prefHeight="62.0" prefWidth="526.0" text="de luxe et de détente">
                      <font>
                         <Font size="42.0" />
                      </font>
                   </Label>
                   <Button layoutX="14.0" layoutY="401.0" minHeight="12.0" minWidth="53.0" mnemonicParsing="false" onAction="#autoConnect" prefHeight="45.0" prefWidth="67.0" style="-fx-background-color: transparent;" />
-                  <ImageView fitHeight="270.0" fitWidth="371.0" layoutX="525.0" layoutY="159.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/chambre2.jpg" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="270.0" fitWidth="427.0" layoutX="872.0" layoutY="159.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/villa.jpg" />
-                     </image>
-                  </ImageView>
+                  
                   <Button layoutX="1173.0" layoutY="159.0" mnemonicParsing="false" onAction="#imagesVilla" prefHeight="269.0" prefWidth="102.0" style="-fx-font-size: 50px; -fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white;" text="&lt;">
                      <font>
                         <Font size="30.0" />

@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.effect.Glow?>
@@ -11,20 +12,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.control.PasswordField?>
 
-<AnchorPane fx:id="INSCRIPTION" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="807.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
+<AnchorPane fx:id="INSCRIPTION" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="939" prefWidth="693" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="HotelController">
    <children>
-      <TextField fx:id="NOM" layoutX="87.0" layoutY="420.0" prefHeight="25.0" prefWidth="260.0" promptText="Nom" />
-      <TextField fx:id="PRENOM" layoutX="87.0" layoutY="469.0" prefHeight="25.0" prefWidth="260.0" promptText="Prénom" />
-      <PasswordField fx:id="MDP" layoutX="87.0" layoutY="694.0" prefHeight="25.0" prefWidth="300.0" promptText="Mot de passe" />
-      <TextField fx:id="EMAIL" layoutX="87.0" layoutY="640.0" prefHeight="25.0" prefWidth="300.0" promptText="Adresse mail" />
-      <DatePicker fx:id="DATENAISSANCE" layoutX="87.0" layoutY="524.0" prefHeight="10.0" prefWidth="260.0" promptText="Date de naissance" style="-fx-background-color: transparent;" />
-      <Pane layoutX="-7.0" layoutY="-4.0" prefHeight="379.0" prefWidth="611.0">
+      <TextField fx:id="NOM" layoutX="133.5" layoutY="460" prefHeight="25.0" prefWidth="260.0" promptText="Nom" />
+      <TextField fx:id="PRENOM" layoutX="133.5" layoutY="520" prefHeight="25.0" prefWidth="260.0" promptText="Prénom" />
+      <PasswordField fx:id="MDP" layoutX="133.5" layoutY="700" prefHeight="25.0" prefWidth="300.0" promptText="Mot de passe" />
+      <TextField fx:id="EMAIL" layoutX="133.5" layoutY="640" prefHeight="25.0" prefWidth="300.0" promptText="Adresse mail" />
+      <DatePicker fx:id="DATENAISSANCE" layoutX="133.5" layoutY="580" prefHeight="30.0" prefWidth="260.0" promptText="Date de naissance" style="-fx-background-color: transparent;" />
+      <Pane layoutY="24.0" prefHeight="379" prefWidth="693">
          <children>
-            <ImageView fitHeight="350.0" fitWidth="628.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: gaussian-blur(10);">
+            <ImageView fitHeight="419.0" fitWidth="693.0" layoutY="-40.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: gaussian-blur(10);">
                <image>
-                  <Image url="@../images/villaban.jpg" />
+                  <Image url="@../images/vue_piscine.jpg" />
                </image>
                <effect>
                   <Glow level="0.0">
@@ -34,24 +34,24 @@
                   </Glow>
                </effect>
             </ImageView>
-            <Label layoutX="5.0" layoutY="232.0" prefHeight="118.0" prefWidth="605.0" style="-fx-background-color: rgba(255,255,255,0.5);" text="                   Inscription  ">
+            <Label alignment="CENTER" layoutX="0.0" layoutY="232.0" prefHeight="118.0" prefWidth="693.0" style="-fx-background-color: rgba(255,255,255,0.5);" text="Inscription">
                <font>
                   <Font size="58.0" />
                </font>
             </Label>
          </children>
       </Pane>
-      <Button fx:id="inscriptionButton" layoutX="466.0" layoutY="734.0" mnemonicParsing="false" onAction="#ConfirmerInscription" prefHeight="49.0" prefWidth="109.0" style="-fx-background-color: #555555;" text="Confirmer">
+      <Button fx:id="inscriptionButton" layoutX="559.0" layoutY="856.0" mnemonicParsing="false" onAction="#ConfirmerInscription" prefHeight="49.0" prefWidth="109.0" style="-fx-background-color: #555555;" text="Confirmer">
          <font>
             <Font size="17.0" />
          </font>
       </Button>
-      <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="495.0" layoutY="371.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="560.0" layoutY="410.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/home2.png" />
          </image>
       </ImageView>
-      <Button layoutX="488.0" layoutY="365.0" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
-      <Label layoutX="508.0" layoutY="440.0" text="Accueil" />
+      <Button layoutX="553.0" layoutY="417.0" mnemonicParsing="false" onAction="#Home" prefHeight="92.0" prefWidth="83.0" style="-fx-background-color: transparent;" />
+      <Label layoutX="573.0" layoutY="479.0" text="Accueil" />
    </children>
 </AnchorPane>
