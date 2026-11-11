@@ -1,4 +1,3 @@
-
 name: Native distributions
 
 on:
@@ -17,7 +16,6 @@ concurrency:
 jobs:
   native:
     name: ${{ matrix.platform }}-${{ matrix.arch }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -26,25 +24,20 @@ jobs:
             platform: windows
             arch: x64
             jdk_arch: x64
-
           - runner: ubuntu-24.04
             platform: linux
             arch: x64
             jdk_arch: x64
-
           - runner: macos-15
             platform: macos
             arch: arm64
             jdk_arch: aarch64
-
           - runner: macos-15-intel
             platform: macos
             arch: x64
             jdk_arch: x64
-
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,21 +45,18 @@ jobs:
           persist-credentials: false
           lfs: false
 
-      # CLEAN DISTRIBUTIONS BEFORE BUILD
-
       - name: Clean old distributions on Windows
         if: matrix.platform == 'windows'
         shell: pwsh
         run: |
-          if (Test-Path "dist") {
-            Remove-Item "dist" -Recurse -Force
+          if (Test-Path 'dist') {
+            Remove-Item 'dist' -Recurse -Force
           }
 
       - name: Clean old distributions on Unix
         if: matrix.platform != 'windows'
         shell: bash
-        run: |
-          rm -rf dist
+        run: rm -rf dist
 
       - name: Set up Java 21
         uses: actions/setup-java@v4
@@ -81,18 +71,51 @@ jobs:
         with:
           python-version: '3.12'
 
-      # WINDOWS
-
       - name: Set up WiX Toolset 3
         if: matrix.platform == 'windows'
         shell: pwsh
         run: |
-          choco install wixtoolset --version=3.14.1 --yes --no-progress
-          if ($LASTEXITCODE -ne 0) { throw 'WiX installation failed.' }
-          $wix = Get-ChildItem "${env:ProgramFiles(x86)}/WiX Toolset v3*/bin/candle.exe" |
-            Select-Object -First 1
-          if (!$wix) { throw 'WiX Toolset 3 not found.' }
-          $wix.DirectoryName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          $ErrorActionPreference = 'Stop'
+          $wixRoots = @(
+            "${env:ProgramFiles(x86)}\WiX Toolset v3*\bin",
+            "${env:ProgramFiles}\WiX Toolset v3*\bin",
+            'C:\ProgramData\chocolatey\lib\wixtoolset\tools\*\bin'
+          )
+
+          function Find-WixBin {
+            foreach ($pattern in $wixRoots) {
+              $matches = @(Get-Item -Path $pattern -ErrorAction SilentlyContinue)
+              foreach ($folder in $matches) {
+                $candle = Join-Path $folder.FullName 'candle.exe'
+                $light = Join-Path $folder.FullName 'light.exe'
+                if ((Test-Path $candle) -and (Test-Path $light)) {
+                  return $folder.FullName
+                }
+              }
+            }
+            $candleCmd = Get-Command candle.exe -ErrorAction SilentlyContinue
+            $lightCmd = Get-Command light.exe -ErrorAction SilentlyContinue
+            if ($candleCmd -and $lightCmd -and
+                ((Split-Path $candleCmd.Source) -eq (Split-Path $lightCmd.Source))) {
+              return (Split-Path $candleCmd.Source)
+            }
+            return $null
+          }
+
+          $wixBin = Find-WixBin
+          if (-not $wixBin) {
+            Write-Host 'WiX 3 not found. Installing with Chocolatey...'
+            choco install wixtoolset --yes --no-progress
+            if ($LASTEXITCODE -ne 0) {
+              throw 'WiX Toolset installation failed.'
+            }
+            $wixBin = Find-WixBin
+          }
+          if (-not $wixBin) {
+            throw 'WiX Toolset 3 candle.exe and light.exe not found.'
+          }
+          Write-Host "Using WiX Toolset from $wixBin"
+          $wixBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Build and test Windows
         if: matrix.platform == 'windows'
@@ -116,10 +139,9 @@ jobs:
           retention-days: 14
           compression-level: 0
 
-      # LINUX
-
       - name: Linux prerequisites
         if: matrix.platform == 'linux'
+        shell: bash
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -132,6 +154,7 @@ jobs:
 
       - name: Build and test Linux
         if: matrix.platform == 'linux'
+        shell: bash
         run: xvfb-run -a bash scripts/build-linux.sh
 
       - name: Linux package artifact
@@ -144,17 +167,16 @@ jobs:
           retention-days: 14
           compression-level: 0
 
-      # MACOS
-
       - name: Build and test macOS
         if: matrix.platform == 'macos'
+        shell: bash
         run: bash scripts/build-macos.sh
 
       - name: Archive macOS application
         if: matrix.platform == 'macos'
+        shell: bash
         run: |
           mkdir -p target/native-artifacts
-
           ditto -c -k --sequesterRsrc --keepParent \
             "dist/macos/${{ matrix.arch }}/Kharchiche Konsolidated.app" \
             "target/native-artifacts/Kharchiche-Konsolidated-${{ matrix.arch }}.app.zip"
@@ -171,8 +193,6 @@ jobs:
           retention-days: 14
           compression-level: 0
 
-      # DIAGNOSTIC LOGS
-
       - name: Diagnostic logs
         if: always()
         uses: actions/upload-artifact@v4
@@ -185,18 +205,14 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  # PUBLISH DISTRIBUTIONS TO REPOSITORY
-
   publish-dist:
     name: Publish distributions to repository
     needs: native
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-
     permissions:
       contents: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -205,6 +221,7 @@ jobs:
           lfs: false
 
       - name: Clean old distributions
+        shell: bash
         run: |
           git rm -r -f --ignore-unmatch dist
           rm -rf dist
@@ -222,10 +239,10 @@ jobs:
           set -euo pipefail
           mkdir -p dist/build
           unzip -q dist/windows/Kharchiche-Konsolidated-Portable.zip -d dist/build
-          test -f "dist/windows/Kharchiche-Konsolidated-Setup.exe"
-          test -f "dist/build/Kharchiche Konsolidated/Kharchiche Konsolidated.exe"
-          test -d "dist/build/Kharchiche Konsolidated/app"
-          test -d "dist/build/Kharchiche Konsolidated/runtime"
+          test -f 'dist/windows/Kharchiche-Konsolidated-Setup.exe'
+          test -f 'dist/build/Kharchiche Konsolidated/Kharchiche Konsolidated.exe'
+          test -d 'dist/build/Kharchiche Konsolidated/app'
+          test -d 'dist/build/Kharchiche Konsolidated/runtime'
 
       - name: Download Linux distribution
         uses: actions/download-artifact@v4
@@ -249,48 +266,39 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           mkdir -p dist/macos/arm64 dist/macos/x64
-
           for arch in arm64 x64; do
             find "temp/macos/$arch" -type f \
               \( -name '*.dmg' -o -name '*.app.zip' \) \
               -exec mv -t "dist/macos/$arch" {} +
-
             test -n "$(find "dist/macos/$arch" -maxdepth 1 -name '*.dmg' -print -quit)"
             test -n "$(find "dist/macos/$arch" -maxdepth 1 -name '*.app.zip' -print -quit)"
           done
-
           rm -rf temp
-
-          echo "Final distribution structure:"
+          echo 'Final distribution structure:'
           find dist -type f
 
       - name: Configure Git LFS
+        shell: bash
         run: |
           git lfs install --local
-
-          git lfs track "dist/**/*.zip"
-          git lfs track "dist/**/*.dmg"
-          git lfs track "dist/**/*.deb"
-          git lfs track "dist/**/*.exe"
-          git lfs track "dist/build/**"
+          git lfs track 'dist/**/*.zip'
+          git lfs track 'dist/**/*.dmg'
+          git lfs track 'dist/**/*.deb'
+          git lfs track 'dist/**/*.exe'
+          git lfs track 'dist/build/**'
 
       - name: Commit and push distributions
         shell: bash
         run: |
           set -euo pipefail
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add .gitattributes
           git add -f -A dist
-
           if git diff --cached --quiet; then
-            echo "No distribution changes."
+            echo 'No distribution changes.'
             exit 0
           fi
-
-          git commit -m "chore(dist): actualisation automatique des distributions"
+          git commit -m 'chore(dist): actualisation automatique des distributions'
           git push origin HEAD:main
