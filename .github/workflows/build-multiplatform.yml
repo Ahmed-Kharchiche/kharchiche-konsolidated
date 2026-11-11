@@ -211,6 +211,10 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # Serialize repository writes with mobile publication, not the builds themselves.
+    concurrency:
+      group: distribution-publication-main
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
@@ -219,12 +223,14 @@ jobs:
         with:
           persist-credentials: true
           lfs: false
+          ref: main
 
       - name: Clean old distributions
         shell: bash
         run: |
-          git rm -r -f --ignore-unmatch dist
-          rm -rf dist
+          # Preserve mobile packages, including when their latest build failed.
+          git rm -r -f --ignore-unmatch dist/windows dist/linux dist/macos dist/build
+          rm -rf dist/windows dist/linux dist/macos dist/build
           mkdir -p dist
 
       - name: Download Windows distribution

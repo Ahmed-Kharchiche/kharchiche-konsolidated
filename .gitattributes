@@ -7,3 +7,5 @@ dist/**/*.dmg filter=lfs diff=lfs merge=lfs -text
 dist/**/*.deb filter=lfs diff=lfs merge=lfs -text
 dist/**/*.exe filter=lfs diff=lfs merge=lfs -text
 dist/build/** filter=lfs diff=lfs merge=lfs -text
+dist/**/*.apk filter=lfs diff=lfs merge=lfs -text
+dist/**/*.ipa filter=lfs diff=lfs merge=lfs -text

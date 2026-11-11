@@ -1,8 +1,12 @@
+
 name: Mobile distributions (experimental)
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'dist/**'
+      - '.gitattributes'
   workflow_dispatch:
 
 permissions:
@@ -17,57 +21,134 @@ jobs:
     name: Android ARM64 APK
     runs-on: ubuntu-24.04
     timeout-minutes: 90
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           lfs: false
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install Linux build prerequisites
+        shell: bash
+        timeout-minutes: 12
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libz-dev zlib1g-dev libgtk-3-dev libxtst-dev xvfb xauth unzip
+          set -euo pipefail
+
+          echo "Configuring official Ubuntu 24.04 repositories..."
+
+          sudo tee /etc/apt/sources.list.d/ubuntu.sources > /dev/null <<'EOF'
+          Types: deb
+          URIs: https://archive.ubuntu.com/ubuntu/
+          Suites: noble noble-updates noble-backports
+          Components: main restricted universe multiverse
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+          Types: deb
+          URIs: https://security.ubuntu.com/ubuntu/
+          Suites: noble-security
+          Components: main restricted universe multiverse
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          EOF
+
+          echo "Updating package lists..."
+
+          timeout 300s sudo apt-get \
+            -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=20 \
+            -o Acquire::https::Timeout=20 \
+            -o APT::Update::Error-Mode=any \
+            update
+
+          echo "Installing Linux dependencies..."
+
+          timeout 360s sudo env DEBIAN_FRONTEND=noninteractive \
+            apt-get \
+            -o Acquire::Retries=2 \
+            -o Acquire::http::Timeout=20 \
+            -o Acquire::https::Timeout=20 \
+            install -y --no-install-recommends \
+            build-essential \
+            zlib1g-dev \
+            libgtk-3-dev \
+            libxtst-dev \
+            xvfb \
+            xauth \
+            unzip
+
+          echo "Linux prerequisites installed successfully."
+
       - name: Set up pinned Gluon and Android tools
         shell: bash
         run: |
+          set -euo pipefail
+
           bash scripts/setup-mobile-tools.sh
           source .cache/mobile-tools/env.sh
           bash scripts/setup-mobile-android.sh
+
       - name: Verify shared Java, FXML, SQLite and PDF on the host JVM
         shell: bash
         run: |
           set -euo pipefail
+
           source .cache/mobile-tools/env.sh
           python3 mobile/prepare.py
           xvfb-run -a mvn -B -ntp -f mobile/pom.xml verify
+
       - name: Verify statically linked SQLite JNI on the host
         shell: bash
         run: |
           set -euo pipefail
+
           source .cache/mobile-tools/env.sh
           mkdir -p mobile/target/logs
-          bash scripts/test-mobile-native-sqlite.sh 2>&1 | tee mobile/target/logs/native-jni-test.log
+
+          bash scripts/test-mobile-native-sqlite.sh \
+            2>&1 | tee mobile/target/logs/native-jni-test.log
+
       - name: Compile and package native Android application
         shell: bash
         run: |
+          set -euo pipefail
+
           source .cache/mobile-tools/env.sh
           source .cache/mobile-tools/android-env.sh
+
           bash scripts/build-mobile.sh android
+
       - name: Verify actual APK signature
         shell: bash
         run: |
+          set -euo pipefail
+
           source .cache/mobile-tools/android-env.sh
-          "$ANDROID_SDK/build-tools/34.0.0/apksigner" verify --verbose dist/android/Kharchiche-Konsolidated-1.0.0.apk
+
+          APK="dist/android/Kharchiche-Konsolidated-1.0.0.apk"
+
+          test -s "$APK"
+
+          "$ANDROID_SDK/build-tools/34.0.0/apksigner" \
+            verify --verbose "$APK"
+
+          sha256sum "$APK" > "$APK.sha256"
+
       - name: Upload generated APK
         uses: actions/upload-artifact@v4
         with:
           name: kharchiche-android-arm64
-          path: dist/android/Kharchiche-Konsolidated-1.0.0.apk
+          path: |
+            dist/android/Kharchiche-Konsolidated-1.0.0.apk
+            dist/android/Kharchiche-Konsolidated-1.0.0.apk.sha256
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
+
       - name: Upload Android diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -84,45 +165,89 @@ jobs:
     name: iOS ARM64 (optional Apple signing)
     runs-on: macos-15-intel
     timeout-minutes: 90
+
+    outputs:
+      signed: ${{ steps.signing.outputs.signed }}
+
     env:
       MOBILE_IOS_SIGNING_IDENTITY: ${{ secrets.MOBILE_IOS_SIGNING_IDENTITY }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           lfs: false
-      - uses: actions/setup-python@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Select pinned Xcode
+        shell: bash
         run: |
+          set -euo pipefail
+
           test -d /Applications/Xcode_16.4.app
-          sudo xcode-select --switch /Applications/Xcode_16.4.app/Contents/Developer
+
+          sudo xcode-select --switch \
+            /Applications/Xcode_16.4.app/Contents/Developer
+
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-version
+
       - name: Set up pinned Gluon tools
-        run: bash scripts/setup-mobile-tools.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          bash scripts/setup-mobile-tools.sh
+
       - name: Prepare optional Apple signing
         id: signing
+        shell: bash
         env:
           MOBILE_IOS_CERTIFICATE_P12_BASE64: ${{ secrets.MOBILE_IOS_CERTIFICATE_P12_BASE64 }}
           MOBILE_IOS_CERTIFICATE_PASSWORD: ${{ secrets.MOBILE_IOS_CERTIFICATE_PASSWORD }}
           MOBILE_IOS_PROVISION_PROFILE_BASE64: ${{ secrets.MOBILE_IOS_PROVISION_PROFILE_BASE64 }}
-        run: bash scripts/mobile-ios-signing.sh prepare
+        run: |
+          set -euo pipefail
+
+          bash scripts/mobile-ios-signing.sh prepare
+
       - name: Compile and package native iOS application
         shell: bash
         run: |
+          set -euo pipefail
+
           source .cache/mobile-tools/env.sh
+
           bash scripts/build-mobile.sh ios
+
+      - name: Record verified signed IPA checksum
+        if: steps.signing.outputs.signed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          IPA="dist/ios/Kharchiche-Konsolidated-1.0.0.ipa"
+
+          test -s "$IPA"
+          shasum -a 256 "$IPA" > "$IPA.sha256"
+
       - name: Upload signed IPA
         if: steps.signing.outputs.signed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: kharchiche-ios-arm64
-          path: dist/ios/Kharchiche-Konsolidated-1.0.0.ipa
+          path: |
+            dist/ios/Kharchiche-Konsolidated-1.0.0.ipa
+            dist/ios/Kharchiche-Konsolidated-1.0.0.ipa.sha256
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
+
       - name: Upload unsigned iOS app (not installable on iPhone)
         if: steps.signing.outputs.signed != 'true'
         uses: actions/upload-artifact@v4
@@ -132,6 +257,7 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 14
+
       - name: Upload iOS diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -142,6 +268,93 @@ jobs:
             mobile/target/gluonfx/**/log/
           if-no-files-found: ignore
           retention-days: 7
+
       - name: Remove temporary Apple signing material
         if: always()
-        run: bash scripts/mobile-ios-signing.sh cleanup
+        shell: bash
+        run: |
+          bash scripts/mobile-ios-signing.sh cleanup
+
+  publish-mobile:
+    name: Publish verified mobile distributions to main
+
+    needs: [android, ios]
+
+    if: >-
+      ${{
+        always() &&
+        !cancelled() &&
+        github.ref == 'refs/heads/main' &&
+        (
+          needs.android.result == 'success' ||
+          (
+            needs.ios.result == 'success' &&
+            needs.ios.outputs.signed == 'true'
+          )
+        )
+      }}
+
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    permissions:
+      contents: write
+
+    concurrency:
+      group: distribution-publication-main
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          lfs: false
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Download verified Android artifact from this run
+        if: needs.android.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: kharchiche-android-arm64
+          path: target/mobile-publication/android
+
+      - name: Download verified signed iOS artifact from this run
+        if: needs.ios.result == 'success' && needs.ios.outputs.signed == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: kharchiche-ios-arm64
+          path: target/mobile-publication/ios
+
+      - name: Test Android publication replacement safety
+        if: needs.android.result == 'success'
+        env:
+          APK_ARTIFACT_PATH: ${{ github.workspace }}/target/mobile-publication/android/Kharchiche-Konsolidated-1.0.0.apk
+        run: |
+          python3 -m unittest discover \
+            -s mobile \
+            -p 'test_stage_publication.py'
+
+      - name: Validate and stage Android replacement
+        if: needs.android.result == 'success'
+        run: |
+          python3 mobile/stage-publication.py \
+            android target/mobile-publication/android .
+
+      - name: Validate and stage signed iOS replacement
+        if: needs.ios.result == 'success' && needs.ios.outputs.signed == 'true'
+        run: |
+          python3 mobile/stage-publication.py \
+            ios target/mobile-publication/ios .
+
+      - name: Commit only successful mobile replacements
+        env:
+          PUBLISH_ANDROID: ${{ needs.android.result == 'success' }}
+          PUBLISH_IOS: ${{ needs.ios.result == 'success' && needs.ios.outputs.signed == 'true' }}
+        run: |
+          bash scripts/publish-mobile.sh

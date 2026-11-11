@@ -1,8 +1,8 @@
 # Android et iOS : compilation expérimentale
 
-Le build mobile est un projet Maven indépendant, `mobile/pom.xml`. Cette intégration ne change ni le POM racine, ni les sources desktop, ni le workflow `build-multiplatform.yml`. Le workflow `build-mobile.yml` se lance à chaque push sur `main` et manuellement. Ses jobs Android et iOS n'ont aucune dépendance sur les jobs desktop ou entre eux. Un échec reste visible et n'empêche pas `publish-dist` de publier les distributions desktop.
+Le build mobile est un projet Maven indépendant, `mobile/pom.xml`. Les compilations desktop, le POM racine et les sources desktop ne sont pas modifiés. Seule la publication desktop est ajustée pour préserver les dossiers mobiles et sérialiser les écritures Git avec la publication mobile. Le workflow `build-mobile.yml` se lance sur les push de code sur `main` et manuellement. Ses jobs Android et iOS n'ont aucune dépendance sur les builds desktop ou entre eux. Un échec reste visible et n'empêche pas `publish-dist` de publier les distributions desktop.
 
-Les paquets mobiles sont uniquement des **artefacts GitHub Actions** dans cette phase. Aucun commit, push, GitHub Release ou envoi à un magasin n'est ajouté. `publish-dist` ne les récupère pas dans le dépôt. Les noms de sortie des scripts sont :
+Les paquets mobiles restent des **artifacts GitHub Actions** téléchargeables indépendamment et sont désormais aussi publiés automatiquement dans le dépôt par le job `publish-mobile`. Celui-ci télécharge uniquement les artifacts vérifiés du même run et dont le job a réussi. Une erreur Android ne bloque pas la publication d'un IPA signé réussi, et inversement. Les noms exacts des fichiers publiés sont :
 
 ```text
 dist/android/Kharchiche-Konsolidated-1.0.0.apk
@@ -11,14 +11,28 @@ dist/ios/Kharchiche-Konsolidated-1.0.0.ipa
 
 Ces fichiers sont créés uniquement à partir d'un vrai résultat du packager. Le script vérifie le contenu du paquet ; le workflow vérifie aussi la signature de l'APK. Sans signature Apple, seul un `.app.zip` explicitement non installable est proposé comme artefact de diagnostic, hors de `dist/ios/`.
 
+Le ZIP non signé reste exactement `mobile/target/artifacts/Kharchiche-Konsolidated-ios-unsigned.app.zip` ; il n'est jamais téléchargé par le job de publication et ne remplace jamais l'ancien IPA signé.
+
+## Publication automatique et conservation
+
+Après validation de signature, les builds ajoutent une empreinte SHA-256 à leur artifact. `mobile/stage-publication.py` vérifie à nouveau cette empreinte et la structure du paquet avant tout remplacement : bibliothèque ELF ARM64 dans l'APK, profil et ressources de signature dans l'IPA. Les contrôles cryptographiques restent effectués sur les runners natifs (`apksigner` et `codesign`). Seuls les deux noms autorisés peuvent être copiés ; les autres distributions ne sont ni nettoyées ni ajoutées au commit mobile.
+
+Une compilation échouée, un iOS non signé, un artifact absent ou une empreinte incorrecte laisse l'ancienne distribution distante intacte. Les fichiers précédents ne sont remplacés qu'après validation. Les anciennes versions restent également dans l'historique Git/LFS. Les deux fichiers mobiles sont suivis par Git LFS comme les distributions desktop.
+
+Les deux jobs de publication partagent le groupe de concurrence `distribution-publication-main` et récupèrent le dernier `main` lorsqu'ils commencent. Cela évite qu'un nettoyage desktop supprime une publication mobile récente. Les builds eux-mêmes continuent à tourner indépendamment. Le publisher mobile ne force jamais un push ; il tente un rebase en cas de nouveau commit indépendant et échoue en préservant le dépôt distant en cas de conflit.
+
+Les commits automatiques utilisent le `GITHUB_TOKEN` du dépôt, dont les push ne relancent pas les workflows ([documentation GitHub](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)). Le commit mobile porte aussi `[skip ci]`, et les push limités à `dist/**`/`.gitattributes` sont ignorés par le workflow mobile. Aucune GitHub Release ni publication dans un magasin n'est ajoutée. Les permissions d'écriture Actions et les règles de protection de `main` doivent autoriser les commits du bot, comme pour le publisher desktop existant.
+
+Vérification de cette extension : deux tests Python réussis, dont remplacement à partir du véritable APK local, conservation des autres plateformes et refus d'un remplacement dont l'empreinte est incorrecte ou absente ; les deux workflows passent actionlint et le script de publication passe la vérification de syntaxe Bash. Aucun push vers le vrai dépôt n'a été exécuté pour ce contrôle ; la publication distante reste à valider lors du prochain run sur `main`.
+
 ## Fichiers de cette intégration
 
 - Workflow : `.github/workflows/build-mobile.yml`.
-- Module isolé : `mobile/pom.xml`, `mobile/.gitignore`, `mobile/prepare.py`, `mobile/collect.py`.
+- Module isolé : `mobile/pom.xml`, `mobile/.gitignore`, `mobile/prepare.py`, `mobile/collect.py`, `mobile/stage-publication.py`, `mobile/test_stage_publication.py`.
 - Entrée et ouverture des documents : `mobile/src/main/java/MobileMain.java`, `mobile/src/main/java/OpenFileUtil.java`.
 - JNI SQLite : `mobile/native/sqlite-bootstrap.c`, et `SQLiteFeature.java`, `SQLiteLoader.java`, `SQLiteBootstrap.java` sous `mobile/src/main/java/mobile/nativeimage/`.
 - Tests : `mobile/src/test/java/MobileViewportTest.java`, `mobile/src/test/java/NativeSQLiteSmoke.java`. Les tests desktop existants sont réutilisés, sans suppression ni modification.
-- Scripts : `scripts/setup-mobile-tools.sh`, `scripts/setup-mobile-android.sh`, `scripts/build-mobile-sqlite.sh`, `scripts/build-mobile.sh`, `scripts/test-mobile-native-sqlite.sh`, `scripts/mobile-ios-signing.sh`.
+- Scripts : `scripts/setup-mobile-tools.sh`, `scripts/setup-mobile-android.sh`, `scripts/build-mobile-sqlite.sh`, `scripts/build-mobile.sh`, `scripts/test-mobile-native-sqlite.sh`, `scripts/mobile-ios-signing.sh`, `scripts/publish-mobile.sh`.
 - Documentation : `README.md` mis à jour et ce guide `docs/mobile.md` créé.
 
 ## Choix de compatibilité
@@ -105,7 +119,7 @@ Pour une signature locale déjà installée dans le trousseau et les profils du 
 - **Réussi** : compilation du module mobile et des tests communs en Java 17, puis `mvn -f mobile/pom.xml verify` sous WSL/GraalVM Gluon : 2 tests, 0 erreur/échec. Cela couvre JDBC SQLite sur la JVM hôte, les FXML/images, les tickets OpenPDF et l'affichage des cinq écrans dans une largeur de 360 pixels, pas leur exécution native ARM64.
 - **Réussi** : test d'exécution JNI dans un binaire Native Image hôte : `NATIVE_SQLITE_JNI_PERSISTENCE_OK`. Ce test a détecté puis permis de corriger l'absence d'appel automatique à `JNI_OnLoad` dans la première liaison statique ; les identifiants natifs Xerial doivent être initialisés explicitement. La correction est partagée par Android et iOS.
 - **Réussi — Android natif** : compilation ARM64, liaison, packaging GluonFX/Gradle et collecte du véritable APK `dist/android/Kharchiche-Konsolidated-1.0.0.apk`, avec la correction JNI intégrée. Vérification réelle par `apksigner` 34.0.0 : signatures v1 et v2 valides. Le paquet local est un build de développement d'environ 57 Mo.
-- **Réussi** : validation du workflow par actionlint 1.7.12 et syntaxe des six scripts Bash. Les jobs GitHub Actions eux-mêmes n'ont pas été exécutés depuis cette session ; les compilations et tests Android ci-dessus ont été exécutés localement sous WSL.
+- **Réussi** : validation du workflow par actionlint 1.7.12 et syntaxe des scripts Bash. Les jobs GitHub Actions eux-mêmes n'ont pas été exécutés depuis cette session ; les compilations et tests Android ci-dessus ont été exécutés localement sous WSL.
 - **iOS** : configuration créée, non exécutée ici (machine Windows/WSL, sans Xcode ni secrets Apple).
 - **Téléphones et magasins** : non testés. La signature et la réussite d'un packaging ne prouvent pas le bon fonctionnement de l'interface ou de toutes les fonctionnalités.
 

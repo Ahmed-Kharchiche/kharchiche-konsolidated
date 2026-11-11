@@ -460,7 +460,7 @@ L’assistance a également porté sur des tests techniques, la réorganisation 
 
 ## Android et iOS — compilation expérimentale
 
-Les quatre distributions desktop restent inchangées. Un workflow indépendant, **Mobile distributions (experimental)**, tente désormais de produire les versions mobiles à chaque push sur `main` et via `workflow_dispatch`. Ses échecs ne bloquent pas les builds ni la publication desktop. Les résultats mobiles sont des artefacts Actions ; `publish-dist` ne les ajoute pas au dépôt.
+Les compilations desktop restent inchangées. Le workflow indépendant **Mobile distributions (experimental)** produit les versions mobiles sur `main` et via `workflow_dispatch`. Son job `publish-mobile` met automatiquement à jour les APK/IPA vérifiés dans le dépôt avec Git LFS, tout en conservant les artifacts Actions. Un échec de compilation conserve l'ancienne distribution correspondante et ne bloque pas le desktop. Le nettoyage de `publish-dist` préserve désormais les dossiers mobiles ; les écritures des deux publications sont sérialisées.
 
 - **Android ARM64** : cible `dist/android/Kharchiche-Konsolidated-1.0.0.apk`, véritable compilation native GluonFX/GraalVM avec signature de développement.
 - **iOS ARM64** : cible `dist/ios/Kharchiche-Konsolidated-1.0.0.ipa` uniquement avec certificat Apple, clé privée et profil compatibles. Sans ces secrets, le job tente de fournir un bundle `.app` non signé comme artefact de diagnostic, sans prétendre qu'il est installable.
