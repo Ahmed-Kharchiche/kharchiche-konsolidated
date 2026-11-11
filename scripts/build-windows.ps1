@@ -8,7 +8,7 @@ $failed = $false
 $lock = $null
 $work = $null
 $logDir = Join-Path $root 'target/windows-build-logs'
-$final = Join-Path $root 'dist/Kharchiche Konsolidated'
+$final = Join-Path $root 'dist/build/Kharchiche Konsolidated'
 . (Join-Path $PSScriptRoot 'windows-distribution.ps1')
 
 function Invoke-BuildTool {
@@ -154,6 +154,7 @@ try {
     Invoke-BuildTool (Join-Path $app 'runtime/bin/java.exe') @('-version') (Join-Path $logDir 'packaged-java.log')
 
     Write-DistributionManifest $app $root
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $final) | Out-Null
     Publish-WindowsDistribution $app $final $work $root
     $exe = Join-Path $final 'Kharchiche Konsolidated.exe'
     Write-Host "Application creee : $exe"

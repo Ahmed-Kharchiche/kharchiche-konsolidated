@@ -2,7 +2,7 @@
 function Get-GeneratedFiles([string]$Path, [string]$Root) {
     $resolved = [IO.Path]::GetFullPath($Path)
     $project = [IO.Path]::GetFullPath($Root).TrimEnd('\')
-    $allowed = @((Join-Path $project 'target/windows-build-tmp'), (Join-Path $project 'dist/Kharchiche Konsolidated'))
+    $allowed = @((Join-Path $project 'target/windows-build-tmp'), (Join-Path $project 'dist/build/Kharchiche Konsolidated'))
     if (!($allowed | Where-Object { $resolved -eq $_ -or $resolved.StartsWith($_ + '\', [StringComparison]::OrdinalIgnoreCase) })) {
         throw "Chemin de generation non autorise : $resolved"
     }

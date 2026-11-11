@@ -330,7 +330,7 @@ Le lanceur est actuellement **à la racine du projet**. Il appelle **scripts/bui
 La sortie locale est :
 
 ~~~text
-dist/Kharchiche Konsolidated/
+dist/build/Kharchiche Konsolidated/
 ├── Kharchiche Konsolidated.exe
 ├── app/
 │   ├── Kharchiche Konsolidated.cfg
@@ -408,7 +408,25 @@ Les applications macOS sont archivées avec **ditto** pour préserver les droits
 
 **Le workflow comporte aussi un job publish-dist qui commit et pousse les distributions sur main, avec Git LFS, après réussite des constructions.** Il ne se limite donc pas à produire des artefacts temporaires. Les permissions du dépôt, les protections de branche et les quotas Git LFS peuvent empêcher cette étape.
 
-Les fichiers publiés comprennent notamment l’archive Windows sous **dist/windows/**, le .deb sous **dist/linux/** et les .dmg/.app.zip sous **dist/macos/<architecture>/**. Aucune GitHub Release n’est créée par ce workflow ; cette publication ne met pas automatiquement à jour les applications déjà installées.
+Les fichiers publiés comprennent **dist/windows/Kharchiche-Konsolidated-Setup.exe**, **dist/windows/Kharchiche-Konsolidated-Portable.zip**, le dossier Windows complet sous **dist/build/Kharchiche Konsolidated/**, le .deb sous **dist/linux/** et les .dmg/.app.zip sous **dist/macos/<architecture>/**. Aucune GitHub Release n’est créée par ce workflow ; cette publication ne met pas automatiquement à jour les applications déjà installées.
+
+Le workflow installe WiX Toolset 3 et génère automatiquement l’installateur Windows avec `jpackage --type exe`. Pour créer aussi les paquets localement, installer WiX Toolset 3 (avec `candle.exe` et `light.exe` dans le PATH), puis exécuter `./scripts/package-windows.ps1` après la construction, avec `JAVA_HOME` pointant vers le JDK 21.
+
+~~~text
+dist/
+├── windows/
+│   ├── Kharchiche-Konsolidated-Setup.exe
+│   └── Kharchiche-Konsolidated-Portable.zip
+├── linux/
+├── macos/
+│   ├── arm64/
+│   └── x64/
+└── build/
+    └── Kharchiche Konsolidated/
+        ├── Kharchiche Konsolidated.exe
+        ├── app/
+        └── runtime/
+~~~
 
 Le script local **publier.bat n’est pas un simple lanceur**. Il exécute **clean verify**, ajoute les modifications de fichiers déjà suivis avec **git add -u**, crée un commit puis effectue un push vers **origin main**. Il peut donc déclencher le workflow et sa publication des distributions. Les nouveaux fichiers non suivis doivent être examinés et ajoutés séparément si l’on souhaite les publier.
 
