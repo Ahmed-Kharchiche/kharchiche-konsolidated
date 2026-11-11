@@ -457,3 +457,18 @@ L’IA a été utilisée ensuite comme assistance pour simplifier l’exécution
 L’assistance a également porté sur des tests techniques, la réorganisation des fichiers, la documentation et l’harmonisation des dimensions et positions dans les FXML, en conservant les éléments et les actions existants. Ces interventions sont distinguées de la conception initiale et de l’implémentation des fonctionnalités métier.
 
 **L’application n’intègre aucune fonctionnalité d’intelligence artificielle et n’a pas besoin d’un service d’IA pour fonctionner.**
+
+## Android et iOS — compilation expérimentale
+
+Les quatre distributions desktop restent inchangées. Un workflow indépendant, **Mobile distributions (experimental)**, tente désormais de produire les versions mobiles à chaque push sur `main` et via `workflow_dispatch`. Ses échecs ne bloquent pas les builds ni la publication desktop. Les résultats mobiles sont des artefacts Actions ; `publish-dist` ne les ajoute pas au dépôt.
+
+- **Android ARM64** : cible `dist/android/Kharchiche-Konsolidated-1.0.0.apk`, véritable compilation native GluonFX/GraalVM avec signature de développement.
+- **iOS ARM64** : cible `dist/ios/Kharchiche-Konsolidated-1.0.0.ipa` uniquement avec certificat Apple, clé privée et profil compatibles. Sans ces secrets, le job tente de fournir un bundle `.app` non signé comme artefact de diagnostic, sans prétendre qu'il est installable.
+
+Le module Maven séparé `mobile/` réutilise les sources métier, les contrôleurs, les FXML et les images. Les adaptations concernent le stockage privé, la liaison JNI SQLite, la réflexion FXML, l'affichage dans un écran étroit et l'ouverture des tickets. SQLite 3.46.0 et OpenPDF 1.3.39 sont conservés ; le partage des PDF vers une autre application reste à intégrer sur mobile. Aucun JDK n'est requis sur téléphone.
+
+La compilation croisée mobile utilise la toolchain GraalVM Gluon basée sur Java 17 et le SDK statique JavaFX 21 compatible. Les sources communes sont compilées en release 17 pour cette cible uniquement ; le desktop reste en Java 21.
+
+**Vérifié ici** : test desktop réussi, deux tests du module mobile réussis sur la JVM Linux, test SQLite dans un véritable exécutable Native Image réussi, compilation native Android et création du véritable APK réussies sous WSL, puis signature vérifiée avec `apksigner`. Le fichier est disponible sous `dist/android/Kharchiche-Konsolidated-1.0.0.apk` (build de développement ARM64, environ 57 Mo). Les jobs Actions n'ont pas été exécutés depuis cette session. iOS nécessite un runner macOS et n'a pas été compilé ici. Le fonctionnement sur téléphone reste à vérifier.
+
+Les commandes Android/iOS, les versions épinglées, les secrets Apple requis, les limites et le résultat de la tentative native sont détaillés dans [le guide mobile](docs/mobile.md).

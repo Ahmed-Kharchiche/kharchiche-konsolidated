@@ -22,7 +22,7 @@
         <tabs>
           <Tab fx:id="pageSelection" text="Selection">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F5F1EA;">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F2F2F2;">
                      <children>
                         <RadioButton fx:id="chambreClassique" layoutX="119.5" layoutY="159.5" mnemonicParsing="false" onAction="#afficherPrixClassique" text="Chambre classique">
                            <toggleGroup>
@@ -82,7 +82,7 @@
           </Tab>
           <Tab fx:id="pageInformations" disable="true" text="Informations">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F5F1EA;">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F2F2F2;">
                      <children>
                         <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="508.5" layoutY="103.5" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -132,7 +132,7 @@
           </Tab>
             <Tab fx:id="pagePaiement" disable="true" text="Paiement">
                <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F5F1EA;">
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="905" prefWidth="693" style="-fx-background-color: #F2F2F2;">
                      <children>
                         <ImageView fitHeight="66.0" fitWidth="84.0" layoutX="509.5" layoutY="106.5" pickOnBounds="true" preserveRatio="true">
                            <image>
